@@ -1,34 +1,24 @@
 import { Button, StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import Todo from "../Components/Todo";
-import { useTodoStore } from "../store/useTodoStore";
-import { useTodo } from "../utils/useTodos";
+import { useTodoUpdated } from "../utils/useTodoUpdated";
 
 const MonitorScreen = () => {
-  const { todo, id, increase, decrease, setTodo } = useTodoStore((state) => ({
-    todo: state.todo,
-    id: state.id,
-    increase: state.increaseId,
-    decrease: state.decreaseId,
-    setTodo: state.setTodo,
-  }));
+  const [number, setNumber] = useState<number>(1);
+  const todo = useTodoUpdated(number);
 
-  useEffect(() => {
-    const fetchTodo = async () => {
-      const todoData = await useTodo(id);
-      setTodo(todoData);
-      console.log(todoData);
-    };
+  // console.log("updatedTodo", todo);
 
-    fetchTodo();
-  }, [id]);
+  const handleDecreaseNumber = () => {
+    setNumber(number > 1 ? number - 1 : number);
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.buttons}>
-        <Button title="+" onPress={() => increase()} />
-        <Text style={styles.todoText}>Todo Id: {id}</Text>
-        <Button title="-" onPress={() => decrease()} />
+        <Button title="+" onPress={() => setNumber(number + 1)} />
+        <Text style={styles.todoText}>Todo Id: {number}</Text>
+        <Button title="-" onPress={handleDecreaseNumber} />
       </View>
       <Todo todo={todo} />
     </View>
